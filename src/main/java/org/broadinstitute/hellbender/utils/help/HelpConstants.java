@@ -92,8 +92,8 @@ public final class HelpConstants {
     public final static String DOC_CAT_BWA_MEM_UTILS = "Bwa Mem JNI binding Tools";
     public final static String DOC_CAT_BWA_MEM_UTILS_SUMMARY = "Bwa Mem JNI binding Tools";
 
-    public final static String DOC_CAT_SPARK_PATHSEQ = "PathSeq Tools";
-    public final static String DOC_CAT_SPARK_PATHSEQ_SUMMARY = "Tools for detecting pathogens (experimental)";
+    public final static String DOC_CAT_METAGENOMICS = "Metagenomics Tools";
+    public final static String DOC_CAT_METAGENOMICS_SUMMARY = "Tools for performing metagenomic analyses";
 
     public final static String DOC_CAT_SPARK_VALIDATION = "Spark Test Tools";
     public final static String DOC_CAT_SPARK_VALIDATION_SUMMARY = "Tools for experimenting with Spark";
