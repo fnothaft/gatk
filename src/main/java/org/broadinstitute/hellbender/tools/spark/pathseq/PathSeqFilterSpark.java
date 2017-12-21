@@ -85,6 +85,8 @@ import java.io.IOException;
  * <ol>
  *     <li>Liebert, M. A. et al. (2006). A Fast and Symmetric DUST Implementation to Mask Low-Complexity DNA Sequences. J. Comput. Biol., 13, 1028-1040. </li>
  * </ol>
+ *
+ * @author Mark Walker &lt;markw@broadinstitute.org&gt;
  */
 
 @CommandLineProgramProperties(summary = "Filters low complexity, low quality, duplicate, and host reads. First step in the PathSeq pipeline.",

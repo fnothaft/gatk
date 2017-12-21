@@ -87,6 +87,8 @@ import java.io.IOException;
  *   --min-score-identity 0.90 \
  *   --identity-margin 0.02
  * </pre>
+ *
+ * @author Mark Walker &lt;markw@broadinstitute.org&gt;
  */
 
 @CommandLineProgramProperties(summary = "Classify reads and estimate abundances of each taxon in the reference. This is the third and final step of the PathSeq pipeline.",

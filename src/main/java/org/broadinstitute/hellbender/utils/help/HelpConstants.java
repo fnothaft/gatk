@@ -92,9 +92,6 @@ public final class HelpConstants {
     public final static String DOC_CAT_BWA_MEM_UTILS = "Bwa Mem JNI binding Tools";
     public final static String DOC_CAT_BWA_MEM_UTILS_SUMMARY = "Bwa Mem JNI binding Tools";
 
-    public final static String DOC_CAT_METAGENOMICS = "Metagenomics Tools";
-    public final static String DOC_CAT_METAGENOMICS_SUMMARY = "Tools for performing metagenomic analyses";
-
     public final static String DOC_CAT_SPARK_VALIDATION = "Spark Test Tools";
     public final static String DOC_CAT_SPARK_VALIDATION_SUMMARY = "Tools for experimenting with Spark";
 
@@ -149,7 +146,6 @@ public final class HelpConstants {
             groupToSuperCategory.put(DOC_CAT_SPARK_PIPELINE, DOC_SUPERCAT_TOOLS);
             groupToSuperCategory.put(DOC_CAT_SPARK_SV, DOC_SUPERCAT_TOOLS);
             groupToSuperCategory.put(DOC_CAT_SV_DISCOVERY, DOC_SUPERCAT_TOOLS);
-            groupToSuperCategory.put(DOC_CAT_SPARK_PATHSEQ, DOC_SUPERCAT_TOOLS);
             groupToSuperCategory.put(DOC_CAT_SPARK_VALIDATION, DOC_SUPERCAT_TOOLS);
             groupToSuperCategory.put(DOC_CAT_TEST, DOC_SUPERCAT_TOOLS);
 

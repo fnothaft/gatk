@@ -55,6 +55,8 @@ import java.util.*;
  *
  * <p>Often there are inconsistencies between the reference sequences, NCBI catalog, and taxonomy dump archives. To
  * minimize this issue, ensure that the input files are retrieved on the same date.</p>
+ *
+ * @author Mark Walker &lt;markw@broadinstitute.org&gt;
  */
 @DocumentedFeature
 @CommandLineProgramProperties(summary = "Build an annotated taxonomy datafile for a given microbe reference. The output file from this tool is required to run the PathSeq pipeline.",

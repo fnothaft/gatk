@@ -68,6 +68,8 @@ import java.io.IOException;
  * environment parameters) can affect the output for paired-end alignment.</p>
  *
  * <p>To minimize output file size, header lines are included only for sequences with at least one alignment.</p>
+ *
+ * @author Mark Walker &lt;markw@broadinstitute.org&gt;
  */
 
 @CommandLineProgramProperties(summary = "Align reads to a microbe reference using BWA-MEM and Spark. Second step in the PathSeq pipeline.",

@@ -62,7 +62,9 @@ import java.util.Collection;
  *
  * <p>For most references, the Java VM will run out of memory with the default settings. The Java heap size limit should
  * be set at least 20x the size of the reference (less if building a Bloom filter). For example, for a 3 GB reference set
- * the limit to 60 GB by prepending JAVA_OPTS="-Xmx60g" to the command.</p>
+ * the limit to 60 GB by adding --java-options "-Xmx60g" to the command.</p>
+ *
+ * @author Mark Walker &lt;markw@broadinstitute.org&gt;
  */
 @DocumentedFeature
 @CommandLineProgramProperties(summary = "Produce a set of k-mers from the given host reference. The output file from this tool is required to run the PathSeq pipeline.",

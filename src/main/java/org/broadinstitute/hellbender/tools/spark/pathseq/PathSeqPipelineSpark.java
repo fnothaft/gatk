@@ -107,7 +107,7 @@ import java.util.List;
  *     <li>Kostic, A. D. et al. (2011). PathSeq: software to identify or discover microbes by deep sequencing of human tissue. Nat. Biotechnol. 29, 393-396.</li>
  * </ol>
  *
- *
+ * @author Mark Walker &lt;markw@broadinstitute.org&gt;
  */
 @CommandLineProgramProperties(summary = "Combined tool that performs all PathSeq steps: read filtering, microbe reference alignment and abundance scoring",
         oneLineSummary = "Combined tool that performs all steps: read filtering, microbe reference alignment, and abundance scoring",
