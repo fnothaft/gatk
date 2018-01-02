@@ -679,7 +679,7 @@ public abstract class GATKTool extends CommandLineProgram {
         return new SAMFileGATKReadWriter(
             ReadUtils.createCommonSAMWriter(
                 outputPath,
-                referenceArguments.getReferencePath().toFile(),
+                hasReference() ? referenceArguments.getReferencePath().toFile() : null,
                 getHeaderForSAMWriter(),
                 preSorted,
                 createOutputBamIndex,
