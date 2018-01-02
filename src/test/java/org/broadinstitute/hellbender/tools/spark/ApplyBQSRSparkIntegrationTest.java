@@ -28,7 +28,7 @@ public final class ApplyBQSRSparkIntegrationTest extends CommandLineProgramTest 
         final String expectedFile;
 
         private ABQSRTest(String bam, String reference, String outputExtension, String args, String expectedFile) {
-            this.bam= bam;
+            this.bam = bam;
             this.reference = reference;
             this.outputExtension = outputExtension;
             this.args = args;
@@ -50,8 +50,8 @@ public final class ApplyBQSRSparkIntegrationTest extends CommandLineProgramTest 
     public Object[][] createABQSRTestData() {
         List<Object[]> tests = new ArrayList<>();
 
-        tests.add(new Object[]{new ABQSRTest(hiSeqBam, null, ".bam", "-qq -1", resourceDir + "expected.HiSeq.1mb.1RG.2k_lines.alternate_allaligned.recalibrated.DIQ.qq-1.bam")});
-        tests.add(new Object[]{new ABQSRTest(hiSeqBam, null, ".bam", "-qq 6", resourceDir + "expected.HiSeq.1mb.1RG.2k_lines.alternate_allaligned.recalibrated.DIQ.qq6.bam")});
+        tests.add(new Object[]{new ABQSRTest(hiSeqBam, null, ".bam", "-QQ -1", resourceDir + "expected.HiSeq.1mb.1RG.2k_lines.alternate_allaligned.recalibrated.DIQ.qq-1.bam")});
+        tests.add(new Object[]{new ABQSRTest(hiSeqBam, null, ".bam", "-QQ 6", resourceDir + "expected.HiSeq.1mb.1RG.2k_lines.alternate_allaligned.recalibrated.DIQ.qq6.bam")});
         tests.add(new Object[]{new ABQSRTest(hiSeqBam, null, ".bam", null, resourceDir + "expected.HiSeq.1mb.1RG.2k_lines.alternate_allaligned.recalibrated.DIQ.bam")});
         tests.add(new Object[]{new ABQSRTest(hiSeqBam, null, ".bam", "-OQ", resourceDir + "expected.HiSeq.1mb.1RG.2k_lines.alternate_allaligned.recalibrated.DIQ.OQ.bam")});
         tests.add(new Object[]{new ABQSRTest(hiSeqBam, null, ".bam", "-SQQ 10 -SQQ 20 -SQQ 30", resourceDir + "expected.HiSeq.1mb.1RG.2k_lines.alternate_allaligned.recalibrated.DIQ.SQQ102030.bam")});
