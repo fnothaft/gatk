@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * (EXPERIMENTAL) Emit a single sample name from the bam header into an output file.
+ * Emit a single sample name from the bam header into an output file. The sample name is that in the read group (RG) sample (SM) field
  *
  * <p>
  *     Note: If the bam has zero or more than one sample names in the header, this tool will error, by design.
@@ -44,8 +44,9 @@ import java.util.stream.Collectors;
 @BetaFeature
 @DocumentedFeature
 @CommandLineProgramProperties(
-        summary = "(EXPERIMENTAL) Emit a single sample name from the bam header into an output file",
-        oneLineSummary = "(EXPERIMENTAL) Emit a single sample name",
+        summary = "Emit a single sample name from the bam header into an output file. " +
+                "The sample name is that in the read group (RG) sample (SM) field",
+        oneLineSummary = "Emit a single sample name",
         programGroup = QCProgramGroup.class
 )
 final public class GetSampleName extends GATKTool {

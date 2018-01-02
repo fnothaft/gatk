@@ -45,9 +45,11 @@ import static java.lang.Math.pow;
  * Estimate library complexity from the sequence of read pairs
  *
  * <p>
- * The estimation is done by sorting all reads by the first N bases (5 by default) of each read and then comparing
- * reads with the first N bases identical to each other for duplicates.  Reads are considered to be duplicates if
- * they match each other with no gaps and an overall mismatch rate less than or equal to MAX_DIFF_RATE (0.03 by default).
+ * The estimation is done by sorting all reads by the first N bases (defined by --min-identical-bases with default of 5)
+ * of each read and then comparing reads with the first N bases identical to each other for duplicates.
+ * Reads are considered to be duplicates if they match each other with no gaps and an overall mismatch
+ * rate less than or equal to MAX_DIFF_RATE (0.03 by default). The approach differs from that taken by
+ * Picard MarkDuplicates to estimate library complexity in that here alignment is not a factor.
  * </p>
  *
  * <p>
@@ -108,6 +110,7 @@ public final class EstimateLibraryComplexityGATK extends AbstractOpticalDuplicat
     public File OUTPUT;
 
     @Argument(
+            fullName = "min-identical-bases",
             doc = "The minimum number of bases at the starts of reads that must be identical for reads to " +
             "be grouped together for duplicate detection.  In effect total_reads / 4^max_id_bases reads will " +
             "be compared at a time, so lower numbers will produce more accurate results but consume " +
@@ -116,17 +119,20 @@ public final class EstimateLibraryComplexityGATK extends AbstractOpticalDuplicat
     public int MIN_IDENTICAL_BASES = 5;
 
     @Argument(
+            fullName = "max-diff-rate",
             doc = "The maximum rate of differences between two reads to call them identical."
     )
     public double MAX_DIFF_RATE = 0.03;
 
     @Argument(
+            fullName = "min-mean-quality",
             doc = "The minimum mean quality of the bases in a read pair for the read to be analyzed. Reads with " +
             "lower average quality are filtered out and not considered in any calculations."
     )
     public int MIN_MEAN_QUALITY = 20;
 
     @Argument(
+            fullName = "max-group-ratio",
             doc = "Do not process self-similar groups that are this many times over the mean expected group size. " +
             "I.e. if the input contains 10m read pairs and MIN_IDENTICAL_BASES is set to 5, then the mean expected " +
             "group size would be approximately 10 reads."

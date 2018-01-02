@@ -19,6 +19,13 @@ import java.io.PrintStream;
  * Spark tool to accumulate flag statistics given a BAM file, e.g. total number of reads with QC failure flag set, number of
  * duplicates, percentage mapped etc.
  *
+ * <p>
+ * This tool can be run without explicitly specifying Spark options. That is to say,
+ * the given example command without Spark options will run locally.
+ * See <a href ="https://software.broadinstitute.org/gatk/documentation/article?id=10060">Tutorial#10060</a>
+ * for an example of how to set up and run a Spark tool on a cloud Spark cluster.
+ * </p>
+ *
  * <h3>Input</h3>
  * <ul>
  *     <li>A BAM file containing aligned read data</li>

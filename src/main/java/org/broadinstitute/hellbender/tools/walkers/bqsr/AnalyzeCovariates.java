@@ -39,7 +39,7 @@ import java.util.Optional;
  * <p>The tool can take up to three different sets of recalibration tables.
  * The resulting plots will be overlaid on top of each other to make
  * comparisons easy.</p>
- *
+ *3
  * <table style="text-align: left">
  *     <thead>
  *       <tr><th>Set</th><th>Argument</th><th>Label</th><th>Color</th><th>Description</th></tr>
@@ -83,7 +83,6 @@ import java.util.Optional;
  * <h4>Plot a single recalibration table</h4>
  * <pre>
  *   gatk AnalyzeCovariates \
- *     -R reference.fasta \
  *     -bqsr recal1.table \
  *     -plots AnalyzeCovariates.pdf
  * </pre>
@@ -91,7 +90,6 @@ import java.util.Optional;
  * <h4>Plot "before" (first pass) and "after" (second pass) recalibration tables to compare them</h4>
  * <pre>
  *   gatk AnalyzeCovariates \
- *     -R reference.fasta \
  *     -before recal1.table \
  *     -after recal2.table \
  *     -plots AnalyzeCovariates.pdf
@@ -100,50 +98,16 @@ import java.util.Optional;
  * <h4>Plot up to three recalibration tables for comparison</h4>
  * <pre>
  *   gatk AnalyzeCovariates \
- *     -R reference.fasta \
- *     -ignoreLMT \
  *     -bqsr recal1.table \
  *     -before recal2.table \
  *     -after recal3.table \
  *     -plots AnalyzeCovariates.pdf
  * </pre>
  *
- * <h4>Full BQSR quality assessment pipeline</h4>
- * <p>Generate the first pass recalibration table file</p>
- * <pre>
- *   gatk BaseRecalibrator \
- *     -R reference.fasta \
- *     -I input.bam \
- *     -known-sites my-trusted-snps.vcf \
- *     -known-sites my-trusted-indels.vcf \
- *     -O recal1.table
- * </pre>
- *
- * <p>Generate the second pass recalibration table file</p>
- * <pre>
- *   gatk BaseRecalibrator \
- *     -R reference.fasta \
- *     -I input.bam \
- *     -bqsr recal1.table \
- *     -known-sites bundle/my-trusted-snps.vcf \
- *     -known-sites bundle/my-trusted-indels.vcf \
- *     -O recal2.table
- * </pre>
- *
- * <p>Finally, generate the plots and also keep a copy of the csv (optional)</p>
- * <pre>
- *   gatk AnalyzeCovariates \
- *     -R reference.fasta \
- *     -before recal1.table \
- *     -after recal2.table \
- *     -csv BQSR.csv \
- *     -plots AnalyzeCovariates.pdf
- * </pre>
- *
  * <h3>Notes</h3>
  * <ul>
  *     <li>Sometimes you may want to compare recalibration tables where the "after" table was actually generated first. To
- * suppress warnings about the dates of creation of the files, use the `--ignoreLastModificationTimes` argument.</li>
+ * suppress warnings about the dates of creation of the files, use the `--ignore-last-modification-times` argument.</li>
  *     <li>You can ignore the before/after semantics completely if you like, but all tables must have been generated using
  * the same parameters.</li>
  * </ul>
@@ -216,7 +180,7 @@ public final class AnalyzeCovariates extends CommandLineProgram {
      */
     @Argument(
             shortName=CSV_ARG_SHORT_NAME,
-            fullName="intermediateCsvFile",
+            fullName="intermediate-csv-file",
             doc = "location of the csv intermediate file",
             optional = true
     )

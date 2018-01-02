@@ -52,9 +52,9 @@ import java.util.stream.Collectors;
  *   gatk SplitReads /
  *     -I input.bam /
  *     -O outputDirectory /
- *     -split-sample true /
- *     -split-read-group true /
- *     -split-library-name true
+ *     --split-sample /
+ *     --split-read-group /
+ *     --split-library-name
  * </pre>
  */
 @DocumentedFeature
