@@ -21,10 +21,10 @@ import org.broadinstitute.hellbender.utils.Utils;
 import org.broadinstitute.hellbender.utils.codecs.gencode.*;
 import org.broadinstitute.hellbender.utils.param.ParamUtils;
 import org.broadinstitute.hellbender.utils.read.ReadUtils;
-import org.testng.collections.Sets;
 import org.broadinstitute.hellbender.utils.variant.GATKVariantContextUtils;
+import org.testng.collections.Sets;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -137,26 +137,26 @@ public class GencodeFuncotationFactory extends DataSourceFuncotationFactory {
     //==================================================================================================================
     // Constructors:
 
-    public GencodeFuncotationFactory(final File gencodeTranscriptFastaFile, final String version) {
+    public GencodeFuncotationFactory(final Path gencodeTranscriptFastaFile, final String version) {
         this(gencodeTranscriptFastaFile, version, FuncotatorArgumentDefinitions.TRANSCRIPT_SELECTION_MODE_DEFAULT_VALUE, new HashSet<>(), new LinkedHashMap<>());
     }
 
-    public GencodeFuncotationFactory(final File gencodeTranscriptFastaFile, final String version, final Set<String> userRequestedTranscripts) {
+    public GencodeFuncotationFactory(final Path gencodeTranscriptFastaFile, final String version, final Set<String> userRequestedTranscripts) {
         this(gencodeTranscriptFastaFile, version, FuncotatorArgumentDefinitions.TRANSCRIPT_SELECTION_MODE_DEFAULT_VALUE, userRequestedTranscripts, new LinkedHashMap<>());
     }
 
-    public GencodeFuncotationFactory(final File gencodeTranscriptFastaFile, final String version,final FuncotatorArgumentDefinitions.TranscriptSelectionMode transcriptSelectionMode) {
+    public GencodeFuncotationFactory(final Path gencodeTranscriptFastaFile, final String version,final FuncotatorArgumentDefinitions.TranscriptSelectionMode transcriptSelectionMode) {
         this(gencodeTranscriptFastaFile, version, transcriptSelectionMode, new HashSet<>(), new LinkedHashMap<>());
     }
 
-    public GencodeFuncotationFactory(final File gencodeTranscriptFastaFile,
+    public GencodeFuncotationFactory(final Path gencodeTranscriptFastaFile,
                                      final String version,
                                      final FuncotatorArgumentDefinitions.TranscriptSelectionMode transcriptSelectionMode,
                                      final Set<String> userRequestedTranscripts) {
         this(gencodeTranscriptFastaFile, version, transcriptSelectionMode, userRequestedTranscripts, new LinkedHashMap<>());
     }
 
-    public GencodeFuncotationFactory(final File gencodeTranscriptFastaFile,
+    public GencodeFuncotationFactory(final Path gencodeTranscriptFastaFile,
                                      final String version,
                                      final FuncotatorArgumentDefinitions.TranscriptSelectionMode transcriptSelectionMode,
                                      final Set<String> userRequestedTranscripts,
