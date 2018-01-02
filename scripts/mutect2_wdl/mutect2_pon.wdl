@@ -1,10 +1,11 @@
-import "mutect2_multi_sample.wdl" as m2_multi
+import "mutect2.wdl" as m2
 
 workflow Mutect2_Panel {
     # gatk4_jar needs to be a String input to the workflow in order to work in a Docker image
 	String gatk4_jar
 	Int scatter_count
-	File normals_list
+	Array[File] normal_bams
+	Array[File] normal_bais
 	File? intervals
 	File ref_fasta
 	File ref_fasta_index
@@ -16,31 +17,38 @@ workflow Mutect2_Panel {
     String? m2_extra_args
     String pon_name
 
-    call m2_multi.Mutect2_Multi {
-        input:
-            gatk4_jar = gatk4_jar,
-            scatter_count = scatter_count,
-            pair_list = normals_list,
-            intervals = intervals,
-            ref_fasta = ref_fasta,
-            ref_fasta_index = ref_fasta_index,
-            ref_dict = ref_dict,
-            is_run_orientation_bias_filter = false,
-            is_run_oncotator = false,
-            gatk_docker = gatk_docker,
-            oncotator_docker = gatk_docker,   #unused dummy value
-            gatk4_jar_override = gatk4_jar_override,
-            preemptible_attempts = preemptible_attempts,
-            artifact_modes = ["G/T"],   #unused dummy value
-            picard_jar = picard_jar,
-            m2_extra_args = m2_extra_args
+    Pair[File,File] normal_bam_pairs = zip(normal_bams, normal_bais)
+
+    scatter (normal_bam_pair in normal_bam_pairs) {
+        File normal_bam = normal_bam_pairs.left
+        File normal_bai = normal_bam_pairs.right
+
+        call m2.Mutect2 {
+            input:
+                gatk4_jar = gatk4_jar,
+                intervals = intervals,
+                ref_fasta = ref_fasta,
+                ref_fasta_index = ref_fasta_index,
+                ref_dict = ref_dict,
+                tumor_bam = normal_bam,
+                tumor_bam_index = normal_bai,
+                scatter_count = scatter_count,
+                gatk_docker = gatk_docker,
+                gatk4_jar_override = gatk4_jar_override,
+                preemptible_attempts = preemptible_attempts,
+                m2_extra_args = m2_extra_args,
+                is_run_orientation_bias_filter = false,
+                is_run_oncotator = false,
+                picard_jar = picard_jar,
+                oncotator_docker = gatk_docker
+        }
     }
 
     call CreatePanel {
         input:
             gatk4_jar = gatk4_jar,
-            input_vcfs = Mutect2_Multi.unfiltered_vcf_files,
-            input_vcfs_idx = Mutect2_Multi.unfiltered_vcf_index_files,
+            input_vcfs = Mutect2.unfiltered_vcf,
+            input_vcfs_idx = Mutect2.unfiltered_vcf_index,
             output_vcf_name = pon_name,
             gatk4_jar_override = gatk4_jar_override,
             preemptible_attempts = preemptible_attempts,
