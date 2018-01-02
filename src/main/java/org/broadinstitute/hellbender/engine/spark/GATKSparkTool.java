@@ -243,7 +243,7 @@ public abstract class GATKSparkTool extends SparkCommandLineProgram {
             if (hasCramInput() && !hasReference()){
                 throw new UserException.MissingReference("A reference file is required when using CRAM files.");
             }
-            final String refPath = hasReference() ?  referenceArguments.getReferencePath().toFile().getAbsolutePath() : null;
+            final String refPath = hasReference() ?  referenceArguments.getReferenceFileName() : null;
             return readsSource.getParallelReads(readInput, refPath, traversalParameters, bamPartitionSplitSize);
         }
     }
@@ -407,7 +407,7 @@ public abstract class GATKSparkTool extends SparkCommandLineProgram {
         readsSource = new ReadsSparkSource(sparkContext, readArguments.getReadValidationStringency());
         readsHeader = readsSource.getHeader(
                 readInput,
-                hasReference() ?  referenceArguments.getReferencePath().toFile().getAbsolutePath() : null);
+                hasReference() ?  referenceArguments.getReferenceFileName() : null);
     }
 
     /**
