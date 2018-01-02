@@ -66,23 +66,27 @@ import java.util.List;
  *
  * <h3>Examples</h3>
  * <pre>
- * java -Xmx4g -jar GenomeAnalysisTK.jar \
- *   -T BaseRecalibrator \
+ * ./gatk BaseRecalibrator \
  *   -I my_reads.bam \
  *   -R resources/Homo_sapiens_assembly18.fasta \
- *   -knownSites bundle/hg18/dbsnp_132.hg18.vcf \
- *   -knownSites another/optional/setOfSitesToMask.vcf \
- *   -o recal_data.table
+ *   --known-sites bundle/hg18/dbsnp_132.hg18.vcf \
+ *   --known-sites another/optional/setOfSitesToMask.vcf \
+ *   -O recal_data.table
  * </pre>
  */
 
 @CommandLineProgramProperties(
-        summary = "First pass of the Base Quality Score Recalibration (BQSR) -- Generates recalibration table based on various user-specified covariates (such as read group, reported quality score, machine cycle, and nucleotide context).",
-        oneLineSummary = "Generates recalibration table for BQSR",
+        summary = BaseRecalibrator.USAGE_SUMMARY,
+        oneLineSummary = BaseRecalibrator.USAGE_ONE_LINE_SUMMARY,
         programGroup = ReadProgramGroup.class
 )
 @DocumentedFeature
 public final class BaseRecalibrator extends ReadWalker {
+    static final String USAGE_ONE_LINE_SUMMARY = "Generates recalibration table for Base Quality Score Recalibration (BQSR)";
+    static final String USAGE_SUMMARY = "First pass of the Base Quality Score Recalibration (BQSR)" +
+            " -- Generates recalibration table based on various user-specified covariates " +
+            "(such as read group, reported quality score, machine cycle, and nucleotide context).";
+
     protected static final Logger logger = LogManager.getLogger(BaseRecalibrator.class);
 
     /**
@@ -98,7 +102,7 @@ public final class BaseRecalibrator extends ReadWalker {
      * use -XL my.interval.list to skip over processing those sites. Please note however that the statistics reported by the tool will not accurately
      * reflected those sites skipped by the -XL argument.
      */
-    @Argument(fullName = "knownSites", shortName = "knownSites", doc = "One or more databases of known polymorphic sites used to exclude regions around known polymorphisms from analysis.", optional = false)
+    @Argument(fullName = "known-sites", shortName = "known", doc = "One or more databases of known polymorphic sites used to exclude regions around known polymorphisms from analysis.", optional = false)
     private List<FeatureInput<Feature>> knownSites;
 
     /**

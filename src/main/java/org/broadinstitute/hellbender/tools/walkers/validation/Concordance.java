@@ -46,7 +46,7 @@ import java.util.Set;
  * <h3>Usage examples</h3>
  *
  * <pre>
- * gatk-launch --javaOptions "-Xmx4g" Concordance \
+ * ./gatk Concordance \
  *   -R reference.fasta \
  *   -eval eval.vcf \
  *   --truth truth.vcf \
@@ -55,23 +55,26 @@ import java.util.Set;
  *
  */
 @CommandLineProgramProperties(
-        summary = "This tool evaluates an input VCF against a VCF that has been validated and is considered to represent ground truth.\n" +
-                " The summary statistics (# true positives, # false positives, # false negatives, sensitivity, precision) are reported \n" +
-                " in a TSV file (--summary). Note that this tool assumes that the truth VCF only contains PASS variants.",
-        oneLineSummary = "Evaluate concordance of an input VCF against a validated truth VCF",
+        summary = Concordance.USAGE_SUMMARY,
+        oneLineSummary = Concordance.USAGE_ONE_LINE_SUMMARY,
         programGroup = VariantProgramGroup.class
 )
 @DocumentedFeature
 @BetaFeature
 public class Concordance extends AbstractConcordanceWalker {
+    static final String USAGE_ONE_LINE_SUMMARY = "Evaluate concordance of an input VCF against a validated truth VCF";
+    static final String USAGE_SUMMARY = "This tool evaluates an input VCF against a VCF that has been validated" +
+            " and is considered to represent ground truth.\n" +
+            " The summary statistics (# true positives, # false positives, # false negatives, sensitivity, precision) are reported \n" +
+            " in a TSV file (--summary). Note that this tool assumes that the truth VCF only contains PASS variants.";
     public static final String SUMMARY_LONG_NAME = "summary";
     public static final String SUMMARY_SHORT_NAME = "S";
 
-    public static final String TRUE_POSITIVES_AND_FALSE_NEGATIVES_LONG_NAME = "truePositivesAndFalseNegatives";
+    public static final String TRUE_POSITIVES_AND_FALSE_NEGATIVES_LONG_NAME = "true-positives-and-false-negatives";
     public static final String TRUE_POSITIVES_AND_FALSE_NEGATIVES_SHORT_NAME = "tpfn";
-    public static final String TRUE_POSITIVES_AND_FALSE_POSITIVES_LONG_NAME = "truePositivesAndFalsePositives";
+    public static final String TRUE_POSITIVES_AND_FALSE_POSITIVES_LONG_NAME = "true-positives-and-false-positives";
     public static final String TRUE_POSITIVES_AND_FALSE_POSITIVES_SHORT_NAME = "tpfp";
-    public static final String FILTERED_TRUE_NEGATIVES_AND_FALSE_NEGATIVES_LONG_NAME = "filteredTrueNegativesAndFalseNegatives";
+    public static final String FILTERED_TRUE_NEGATIVES_AND_FALSE_NEGATIVES_LONG_NAME = "filtered-true-negatives-and-false-negatives";
     public static final String FILTERED_TRUE_NEGATIVES_AND_FALSE_NEGATIVES_SHORT_NAME = "ftnfn";
 
     public static final String TRUTH_STATUS_VCF_ATTRIBUTE = "STATUS";

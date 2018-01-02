@@ -20,8 +20,8 @@ import java.io.IOException;
 import java.util.List;
 
 @CommandLineProgramProperties(
-        summary = "Count PASS (false positive) variants in a vcf file for Mutect2 NA12878 normal-normal evaluation",
-        oneLineSummary = "Count PASS variants",
+        summary = CountFalsePositives.USAGE_SUMMARY,
+        oneLineSummary = CountFalsePositives.USAGE_ONE_LINE_SUMMARY,
         programGroup = VariantProgramGroup.class
 )
 
@@ -30,7 +30,7 @@ import java.util.List;
  * <h3>Example</h3>
  *
  * <pre>
- * gatk-launch --javaOptions "-Xmx4g" CountFalsePositives \
+ * ./gatk CountFalsePositives \
  *   -V filtered.vcf.gz \
  *   -R ref_fasta.fa \
  *   -O false-positives.txt
@@ -41,6 +41,8 @@ import java.util.List;
 @DocumentedFeature
 @BetaFeature
 public class CountFalsePositives extends VariantWalker {
+    static final String USAGE_ONE_LINE_SUMMARY = "Count PASS variants";
+    static final String USAGE_SUMMARY = "Count PASS (false positive) variants in a vcf file for Mutect2 NA12878 normal-normal evaluation";
     @Argument(
             fullName = StandardArgumentDefinitions.OUTPUT_LONG_NAME,
             shortName = StandardArgumentDefinitions.OUTPUT_SHORT_NAME,

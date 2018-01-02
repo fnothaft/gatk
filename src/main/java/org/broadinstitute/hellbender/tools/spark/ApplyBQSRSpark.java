@@ -18,13 +18,18 @@ import org.broadinstitute.hellbender.utils.gcs.BucketUtils;
 import org.broadinstitute.hellbender.utils.read.GATKRead;
 import org.broadinstitute.hellbender.utils.recalibration.RecalibrationReport;
 
-@CommandLineProgramProperties(summary="Apply Base Quality Recalibration to a SAM/BAM/CRAM file using Spark",
-        oneLineSummary="ApplyBQSR on Spark",
-        programGroup = SparkProgramGroup.class)
+@CommandLineProgramProperties(
+        summary=ApplyBQSRSpark.USAGE_SUMMARY,
+        oneLineSummary=ApplyBQSRSpark.USAGE_ONE_LINE_SUMMARY,
+        programGroup = SparkProgramGroup.class
+)
+
 @DocumentedFeature
 @BetaFeature
 public final class ApplyBQSRSpark extends GATKSparkTool {
     private static final long serialVersionUID = 0l;
+    static final String USAGE_ONE_LINE_SUMMARY = "Apply base quality score recalibration on Spark.";
+    static final String USAGE_SUMMARY = "Apply a linear base quality recalibration model trained with the BaseRecalibrator tool on Spark.";
 
     @Override
     public boolean requiresReads() { return true; }

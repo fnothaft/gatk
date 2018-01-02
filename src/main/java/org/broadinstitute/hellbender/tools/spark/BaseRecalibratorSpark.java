@@ -33,16 +33,68 @@ import org.broadinstitute.hellbender.utils.variant.GATKVariant;
 import java.io.PrintStream;
 import java.util.List;
 
+/**
+ * Spark version of the first pass of the base quality score recalibration.
+ * Generates a recalibration table based on various covariates
+ * (such as read group, reported quality score, machine cycle, and nucleotide context).
+ *
+ * <p>
+ * This walker is designed to work as the first pass in a two-pass pipeline. It does a by-locus traversal operating
+ * only at sites that are not in dbSNP. We assume that all reference mismatches we see are therefore errors and indicative
+ * of poor base quality. This walker generates tables based on various user-specified covariates (such as read group,
+ * reported quality score, cycle, and context). Since there is a large amount of data one can then calculate an empirical
+ * probability of error given the particular covariates seen at this site, where p(error) = num mismatches / num observations.
+ * The output file is a table (of the several covariate values, num observations, num mismatches, empirical quality score).
+ * <p>
+ * Note: ReadGroupCovariate and QualityScoreCovariate are required covariates and will be added for the user regardless of whether or not they were specified.
+ *
+ * <p>
+ *
+ * <h3>Input</h3>
+ * <p>
+ * The input read data whose base quality scores need to be assessed.
+ * <p>
+ * A database of known polymorphic sites to skip over.
+ * </p>
+ *
+ * <h3>Output</h3>
+ * <p>
+ * A GATK Report file with many tables:
+ * <ol>
+ *     <li>The list of arguments</li>
+ *     <li>The quantized qualities table</li>
+ *     <li>The recalibration table by read group</li>
+ *     <li>The recalibration table by quality score</li>
+ *     <li>The recalibration table for all the optional covariates</li>
+ * </ol>
+ *
+ * The GATK Report is intended to be easy to read by humans or computers. Check out the documentation of the GATKReport to learn how to manipulate this table.
+ * </p>
+ *
+ * <h3>Examples</h3>
+ * <pre>
+ * ./gatk BaseRecalibratorSpark \
+ *   -I my_reads.bam \
+ *   -R resources/Homo_sapiens_assembly18.fasta \
+ *   --known-sites bundle/hg18/dbsnp_132.hg18.vcf \
+ *   --known-sites another/optional/setOfSitesToMask.vcf \
+ *   -o recal_data.table
+ * </pre>
+ */
+
 @CommandLineProgramProperties(
-        summary = "Base Quality Score Recalibration (BQSR) -- Generates recalibration table based on various user-specified covariates (such as read group, reported quality score, machine cycle, and nucleotide context).",
-        oneLineSummary = "BaseRecalibrator on Spark",
+        summary = BaseRecalibratorSpark.USAGE_SUMMARY,
+        oneLineSummary = BaseRecalibratorSpark.USAGE_ONE_LINE_SUMMARY,
         programGroup = SparkProgramGroup.class
 )
 @DocumentedFeature
 @BetaFeature
 public class BaseRecalibratorSpark extends GATKSparkTool {
     private static final long serialVersionUID = 1L;
-
+    static final String USAGE_ONE_LINE_SUMMARY = "Generate recalibration table for Base Quality Score Recalibration (BQSR) on Spark.";
+    static final String USAGE_SUMMARY = "First pass of the Base Quality Score Recalibration (BQSR) on Spark." +
+            " Generate a recalibration table based on various user-specified covariates " +
+            "(such as read group, reported quality score, machine cycle, and nucleotide context).";
     @Override
     public boolean requiresReads() { return true; }
 
@@ -59,10 +111,10 @@ public class BaseRecalibratorSpark extends GATKSparkTool {
         return BaseRecalibrator.getStandardBQSRReadFilterList();
     }
 
-    @Argument(doc = "the known variants", shortName = "knownSites", fullName = "knownSites", optional = false)
+    @Argument(doc = "the known variants", shortName = "known", fullName = "known-sites", optional = false)
     private List<String> knownVariants;
 
-    @Argument(doc = "the join strategy for reference bases and known variants", shortName = "joinStrategy", fullName = "joinStrategy", optional = true)
+    @Argument(doc = "the join strategy for reference bases and known variants", shortName = "join", fullName = "join-strategy", optional = true)
     private JoinStrategy joinStrategy = JoinStrategy.BROADCAST;
 
     @Argument(doc = "Path to save the final recalibration tables to.",
@@ -75,10 +127,10 @@ public class BaseRecalibratorSpark extends GATKSparkTool {
     @ArgumentCollection(doc = "all the command line arguments for BQSR and its covariates")
     private final RecalibrationArgumentCollection bqsrArgs = new RecalibrationArgumentCollection();
 
-    @Argument(fullName="readShardSize", shortName="readShardSize", doc = "Maximum size of each read shard, in bases. Only applies when using the OVERLAPS_PARTITIONER join strategy.", optional = true)
+    @Argument(fullName="read-shard-size", shortName="RSS", doc = "Maximum size of each read shard, in bases. Only applies when using the OVERLAPS_PARTITIONER join strategy.", optional = true)
     public int readShardSize = 10000;
 
-    @Argument(fullName="readShardPadding", shortName="readShardPadding", doc = "Each read shard has this many bases of extra context on each side. Only applies when using the OVERLAPS_PARTITIONER join strategy.", optional = true)
+    @Argument(fullName="read-shard-padding", shortName="RSP", doc = "Each read shard has this many bases of extra context on each side. Only applies when using the OVERLAPS_PARTITIONER join strategy.", optional = true)
     public int readShardPadding = 1000;
 
     @Override
