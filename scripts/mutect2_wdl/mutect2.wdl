@@ -33,6 +33,7 @@ workflow Mutect2 {
   File tumor_bam_index
   File? normal_bam
   File? normal_bam_index
+    String vcf_name = basename(tumor_bam, ".bam") + ".vcf"
   File? pon
   File? pon_index
   Int scatter_count
@@ -106,7 +107,8 @@ workflow Mutect2 {
       input_vcfs = M2.output_vcf,
       gatk4_jar_override = gatk4_jar_override,
       preemptible_attempts = preemptible_attempts,
-      gatk_docker = gatk_docker
+      gatk_docker = gatk_docker,
+      vcf_name = vcf_name
   }
 
   if (is_bamOut) {
@@ -158,6 +160,28 @@ workflow Mutect2 {
 
 
   if (is_run_oncotator) {
+        call GetSampleName as GetTumorSample {
+            input:
+                gatk4_jar = gatk4_jar,
+                bam = tumor_bam,
+                bam_index = tumor_bam_index,
+                gatk4_jar_override = gatk4_jar_override,
+                gatk_docker = gatk_docker,
+                preemptible_attempts = preemptible_attempts
+        }
+
+        if (defined(normal_bam)) {
+            call GetSampleName as GetNormalSample {
+                input:
+                    gatk4_jar = gatk4_jar,
+                    bam = tumor_bam,
+                    bam_index = tumor_bam_index,
+                    gatk4_jar_override = gatk4_jar_override,
+                    gatk_docker = gatk_docker,
+                    preemptible_attempts = preemptible_attempts
+            }
+        }
+
         call oncotate_m2 {
             input:
                 m2_vcf = Filter.filtered_vcf,
@@ -168,8 +192,8 @@ workflow Mutect2 {
                 sequencing_center = sequencing_center,
                 sequence_source = sequence_source,
                 default_config_file = default_config_file,
-                case_id = M2.tumor_sample[0],
-                control_id = M2.normal_sample[0]
+                case_id = GetTumorSample.sample,
+                control_id = GetNormalSample.sample
         }
   }
 
@@ -179,8 +203,6 @@ workflow Mutect2 {
         File filtered_vcf = Filter.filtered_vcf
         File filtered_vcf_index = Filter.filtered_vcf_index
         File contamination_table = Filter.contamination_table
-        String tumor_sample = M2.tumor_sample[0]
-        String? normal_sample = M2.normal_sample[0]
 
         # select_first() fails if nothing resolves to non-null, so putting in "null" for now.
         File? oncotated_m2_maf = select_first([oncotate_m2.oncotated_m2_maf, "null"])
@@ -231,12 +253,6 @@ task M2 {
    if [[ "_${normal_bam}" == *.bam ]]; then
          java -Xmx4g -jar $GATK_JAR GetSampleName -I ${normal_bam} -O normal_name.txt
          normal_command_line="-I ${normal_bam} -normal `cat normal_name.txt`"
-         echo `cat tumor_name.txt`-vs-`cat normal_name.txt`.vcf > vcf_name.txt
-   else
-         # Note that normal_name.txt is always created, it's just empty if no normal sample was given.
-         #     This is done to allow an output parameter of the normal sample.
-         touch normal_name.txt
-         echo `cat tumor_name.txt`-tumor-only.vcf > vcf_name.txt
    fi
 
   java -Xmx4g -jar $GATK_JAR Mutect2 \
@@ -246,7 +262,7 @@ task M2 {
     ${"--germline-resource " + gnomad} \
     ${"-pon " + pon} \
     ${"-L " + intervals} \
-    -O `cat vcf_name.txt` \
+    -O "output.vcf" \
     ${true='--bamOutput bamout.bam' false='' is_bamOut} \
     ${m2_extra_args}
   >>>
@@ -259,20 +275,16 @@ task M2 {
   }
 
   output {
-    File output_vcf = read_string("vcf_name.txt")
+    File output_vcf = "output.vcf"
     File output_bamOut = "bamout.bam"
-    String tumor_sample = read_string("tumor_name.txt")
-    String normal_sample = read_string("normal_name.txt")
   }
 }
 
 task MergeVCFs {
   String gatk4_jar
   Array[File] input_vcfs
-
-  #the scattered M2 task yields identical vcf names that have nothing to do with the scatter index, so we just pick the first
-  String output_vcf_name = basename(input_vcfs[0])
   File? gatk4_jar_override
+  String vcf_name
 
   # Runtime parameters
   Int? mem
@@ -290,7 +302,7 @@ task MergeVCFs {
         GATK_JAR=${gatk4_jar_override}
     fi
 
-    java -Xmx2g -jar $GATK_JAR MergeVcfs -I ${sep=' -I ' input_vcfs} -O ${output_vcf_name}
+    java -Xmx2g -jar $GATK_JAR MergeVcfs -I ${sep=' -I ' input_vcfs} -O ${vcf_name}
   }
 
   runtime {
@@ -301,8 +313,8 @@ task MergeVCFs {
   }
 
   output {
-    File output_vcf = "${output_vcf_name}"
-    File output_vcf_index = "${output_vcf_name}.idx"
+    File output_vcf = "${vcf_name}"
+    File output_vcf_index = "${vcf_name}.idx"
   }
 }
 
@@ -481,6 +493,40 @@ task MergeBamOuts {
      File merged_bam_out_index = "${output_vcf_name}.out.bam.bai"
    }
  }
+
+task GetSampleName {
+  String gatk4_jar
+  File bam
+  File bam_index
+  File? gatk4_jar_override
+
+  # Runtime parameters
+  Int? mem
+  String gatk_docker
+  Int? preemptible_attempts
+  Int? disk_space_gb
+
+  command {
+      # Use GATK Jar override if specified
+      GATK_JAR=${gatk4_jar}
+      if [[ "${gatk4_jar_override}" == *.jar ]]; then
+        GATK_JAR=${gatk4_jar_override}
+      fi
+
+       java -Xmx4g -jar $GATK_JAR GetSampleName -I ${bam} -O name.txt
+  }
+
+  runtime {
+        docker: "${gatk_docker}"
+        memory: select_first([mem, 1]) + " GB"
+        disks: "local-disk " + select_first([disk_space_gb, 100]) + " HDD"
+        preemptible: select_first([preemptible_attempts, 2])
+  }
+
+  output {
+    String sample = read_string("name.txt")
+  }
+}
 
 task oncotate_m2 {
     File m2_vcf
