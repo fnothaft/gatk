@@ -70,7 +70,7 @@ public class ReadsPipelineSpark extends GATKSparkTool {
     @Argument(doc = "whether to perform alignment using BWA-MEM", shortName = "align", fullName = "align", optional = true)
     private boolean align;
 
-    @Argument(doc = "the known variants", shortName = "knownSites", fullName = "knownSites", optional = false)
+    @Argument(doc = "the known variants", shortName = "known", fullName = "known-sites", optional = false)
     protected List<String> baseRecalibrationKnownVariants;
 
     @Argument(doc = "the output vcf", shortName = StandardArgumentDefinitions.OUTPUT_SHORT_NAME,
@@ -80,7 +80,7 @@ public class ReadsPipelineSpark extends GATKSparkTool {
     @Argument(doc = "the output bam", shortName = "outputBam", fullName = "outputBam", optional = true)
     protected String outputBam;
 
-    @Argument(doc = "the join strategy for reference bases and known variants", shortName = "joinStrategy", fullName = "joinStrategy", optional = true)
+    @Argument(doc = "the join strategy for reference bases and known variants", shortName = "join", fullName = "join-strategy", optional = true)
     private JoinStrategy joinStrategy = JoinStrategy.BROADCAST;
 
     @ArgumentCollection
