@@ -137,7 +137,10 @@ final class CpxVariantDetector implements VariantDetectorFromLocalAssemblyContig
                 //       one of which contains a large gap, and since the gap split happens after the configuration scoring,
                 //       (that gap split happens after scoring is due to how MQ and AS are used in the scoring step, gap-split alignment cannot use originating alignment's values, but it takes time to recompute)
                 //       one of the alignment from the gap split may be contained in the other original alignment, leading to problems;
-                //       here we first skip it
+                //       here we skip the alignment that is BEFORE the child alignment from the gap-split,
+                //       IFF that alignment contains the child alignment in terms of their spans on the read/contig
+                //       if you are concerned about the first child alignment from the same gapped alignment being skipped,
+                //       don't worry, that is impossible because child alignments of the same gapped alignment cannot overlap on the read.
                 if (two.alnModType.equals(AlnModType.FROM_SPLIT_GAPPED_ALIGNMENT)) {
                     final int overlapOnRead = AlignmentInterval.overlapOnContig(one, two);
                     if (overlapOnRead >= two.getSizeOnRead())
