@@ -1,5 +1,6 @@
 package org.broadinstitute.hellbender.engine;
 
+import com.sun.xml.bind.v2.TODO;
 import htsjdk.samtools.SAMFileHeader;
 import htsjdk.samtools.SAMProgramRecord;
 import htsjdk.samtools.SAMSequenceDictionary;
@@ -21,6 +22,7 @@ import org.broadinstitute.hellbender.engine.filters.CountingReadFilter;
 import org.broadinstitute.hellbender.engine.filters.ReadFilter;
 import org.broadinstitute.hellbender.engine.filters.ReadFilterLibrary;
 import org.broadinstitute.hellbender.engine.filters.WellformedReadFilter;
+import org.broadinstitute.hellbender.exceptions.GATKException;
 import org.broadinstitute.hellbender.exceptions.UserException;
 import org.broadinstitute.hellbender.transformers.ReadTransformer;
 import org.broadinstitute.hellbender.utils.SequenceDictionaryUtils;
@@ -672,14 +674,27 @@ public abstract class GATKTool extends CommandLineProgram {
      * @return SAMFileWriter
      */
     public final SAMFileGATKReadWriter createSAMWriter(final Path outputPath, final boolean preSorted) {
-        if (!hasReference() && IOUtils.isCramFile(outputPath)) {
+        final boolean isCramFile = IOUtils.isCramFile(outputPath);
+        if (!hasReference() && isCramFile) {
             throw new UserException.MissingReference("A reference file is required for writing CRAM files");
+        }
+
+        //TODO this is a workaround until #4039 is resolved
+        final File reference;
+        if ( isCramFile ){
+            try{
+                reference = referenceArguments.getReferencePath().toFile();
+            } catch ( final UnsupportedOperationException e){
+                throw new UserException("When writing a cram File a local reference file must be used", e);
+            }
+        } else {
+            reference = null;
         }
 
         return new SAMFileGATKReadWriter(
             ReadUtils.createCommonSAMWriter(
                 outputPath,
-                hasReference() ? referenceArguments.getReferencePath().toFile() : null,
+                reference,
                 getHeaderForSAMWriter(),
                 preSorted,
                 createOutputBamIndex,
