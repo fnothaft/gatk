@@ -130,9 +130,9 @@ public class GencodeFuncotationFactory extends DataSourceFuncotationFactory {
     private final Set<String> userRequestedTranscripts;
 
     /**
-     * The {@link File} from which we will read the sequences for the coding regions in given transcripts.
+     * The {@link Path} from which we will read the sequences for the coding regions in given transcripts.
      */
-    private final File gencodeTranscriptFastaFile;
+    private final Path gencodeTranscriptFastaFile;
 
     //==================================================================================================================
     // Constructors:
@@ -478,7 +478,7 @@ public class GencodeFuncotationFactory extends DataSourceFuncotationFactory {
                 // Make sure that we have the transcript in our list.
                 // If we don't, warn the user and do not add any funcotations:
                 if ( !transcriptIdMap.containsKey(transcript.getTranscriptId()) ) {
-                    logger.warn("Coding sequence for given transcript ID (" + transcript.getTranscriptId() + ") is missing in file(" + gencodeTranscriptFastaFile.toURI().toString() + "): Skipping.");
+                    logger.warn("Coding sequence for given transcript ID (" + transcript.getTranscriptId() + ") is missing in file(" + gencodeTranscriptFastaFile.toUri().toString() + "): Skipping.");
                     continue;
                 }
 
