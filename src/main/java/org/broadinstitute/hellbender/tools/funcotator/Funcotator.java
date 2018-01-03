@@ -32,15 +32,40 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Funcotator (FUNCtional annOTATOR) performs functional analysis on given variants
- * and reports output in a specified output file.
+ * Funcotator (FUNCtional annOTATOR) analyzes given variants for their function (as retrieved from a set of data sources) and produces the analysis in a specified output file.
  *
- * This tool is the GATK analog of the Oncotator.
+ * <p>
+ *     THIS IS A SHORT DESCRIPTION OF FUNCOTATOR.
+ * </p>
  *
- * Created by jonn on 8/22/17.
+ * <h3>Inputs</h3>
+ * <ul>
+ *     <li>A reference genome sequence.</li>
+ *     <li>The version of the reference genome sequence being used (either hg19 or hg38).</li>
+ *     <li>A VCF of variant calls to annotate.</li>
+ *     <li>The path to a folder of data sources formatted for use by Funcotator.</li>
+ * </ul>
+ *
+ * <h3>Output</h3>
+ * <ul>
+ *     <li>A VCF containing all variants from the input file with added annotation columns corresponding to annotations from each data source that matched a given variant according to that data source's matching criteria.</li>
+ * </ul>
+ *
+ * <h3>Usage example</h3>
+ * <pre>
+ *   ./gatk Funcotator \
+ *   -R reference.fasta \
+ *   -V input.vcf \
+ *   -O output.vcf \
+ *   --dataSourcesPath dataSourcesFolder/ \
+ *   --refVersion refVersionString
+ * </pre>
+ *
+ * <h3>Note</h3>
+ * <p>This tool is the GATK analog of <a href="http://portals.broadinstitute.org/oncotator/">Oncotator</a>.</p>
  */
 @CommandLineProgramProperties(
-        summary = "Create functional annotations on given variants cross-referenced by a given database.\n" +
+        summary = "Create functional annotations on given variants cross-referenced by a given set of data sources.\n" +
                 "A GATK version of the Oncotator.",
         oneLineSummary = "(Experimental) Functional Annotator",
         programGroup = VariantProgramGroup.class
@@ -67,7 +92,7 @@ public class Funcotator extends VariantWalker {
 
     @Argument(
             fullName =  FuncotatorArgumentDefinitions.REFERENCE_VERSION_LONG_NAME,
-            doc = "The version of the Human Genome reference to use (hg19 or Hhg38)."
+            doc = "The version of the Human Genome reference to use (hg19 or hg38)."
     )
     protected FuncotatorArgumentDefinitions.ReferenceVersionType referenceVersion;
 
