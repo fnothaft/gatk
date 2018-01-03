@@ -35,7 +35,39 @@ import java.util.stream.Collectors;
  * Funcotator (FUNCtional annOTATOR) analyzes given variants for their function (as retrieved from a set of data sources) and produces the analysis in a specified output file.
  *
  * <p>
- *     THIS IS A SHORT DESCRIPTION OF FUNCOTATOR.
+ *     This tool is a functional annotation tool that allows a user to add annotations to called variants based on a set of data sources, each with its own matching criteria.
+ *     Data sources are expected to be in directories that are specified as input arguments.  These data source directories are structured as follows:
+ *     <pre>
+ *         Data_Source_Directory/
+ *              Data_Source_1/
+ *                  hg19
+ *                      data_source_1.config
+ *                      data_source_1.data.file.one
+ *                      data_source_1.data.file.two
+ *                      data_source_1.data.file.three
+ *                      ...
+ *                   hg38
+ *                      data_source_1.config
+ *                      data_source_1.data.file.one
+ *                      data_source_1.data.file.two
+ *                      data_source_1.data.file.three
+ *                      ...
+ *              Data_Source_2/
+ *                  hg19
+ *                      data_source_2.config
+ *                      data_source_2.data.file.one
+ *                      data_source_2.data.file.two
+ *                      data_source_2.data.file.three
+ *                      ...
+ *                   hg38
+ *                      data_source_2.config
+ *                      data_source_2.data.file.one
+ *                      data_source_2.data.file.two
+ *                      data_source_2.data.file.three
+ *                      ...
+ *               ...
+ *     </pre>
+ *     A gzip of data source files is provided here: <a href="ftp://ftp.broadinstitute.org/bundle/funcotator/">ftp://ftp.broadinstitute.org/bundle/funcotator/</a>.
  * </p>
  *
  * <h3>Inputs</h3>
@@ -61,8 +93,25 @@ import java.util.stream.Collectors;
  *   --refVersion refVersionString
  * </pre>
  *
- * <h3>Note</h3>
- * <p>This tool is the GATK analog of <a href="http://portals.broadinstitute.org/oncotator/">Oncotator</a>.</p>
+ * <h3>Notes</h3>
+ * <ul>
+ *     <li>This is a beta tool, and as such may generate errors or warnings.</li>
+ *     <li>This tool is the GATK analog of <a href="http://portals.broadinstitute.org/oncotator/">Oncotator</a>.</li>
+ * </ul>
+ *
+ * <h3>Known Issues</h3>
+ * <p>A complete list of known open issues can be found on <a href="https://github.com/broadinstitute/gatk/issues?q=is%3Aopen+is%3Aissue+label%3AFuncotator">the GATK github entry for funcotator here.</a></p>
+ *
+ * <h4>Notable Issues as of 2018 Jan 3</h4>
+ * <ul>
+ *     <li>Only supports VCF for inputs and outputs (<a href="https://github.com/broadinstitute/gatk/issues/3922">Issue 3922</a>).</li>
+ *     <li>Only supports a single GENCODE data source (<a href="https://github.com/broadinstitute/gatk/issues/3956">Issue 3956</a>).</li>
+ *     <li>Non-GENCODE annotations on multiallelic variants are only rendered properly for the last allele (<a href="https://github.com/broadinstitute/gatk/issues/3896">Issue 3896</a>).</li>
+ *     <li>The "other transcripts" annotation is missing for IGR variants (<a href="https://github.com/broadinstitute/gatk/issues/3849">Issue 3849</a>).</li>
+ *     <li>Only the "Format" field of input VCF files is preserved in the output VCF file (<a href="https://github.com/broadinstitute/gatk/issues/3895">Issue 3895</a>).</li>
+ *     <li>Codon Change and Protein Change for indels spanning splice sites are not properly rendered (<a href="https://github.com/broadinstitute/gatk/issues/3749">Issue 3749</a>).</li>
+ * </ul>
+ *
  */
 @CommandLineProgramProperties(
         summary = "Create functional annotations on given variants cross-referenced by a given set of data sources.\n" +
